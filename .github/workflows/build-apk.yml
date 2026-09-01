@@ -26,9 +26,13 @@ jobs:
 
       - name: Generate missing Android platform files
         run: flutter create . --platforms=android --org com.kasku.app --project-name kasku
-      - name: Set Android compile SDK
-        run: sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 36/' android/app/build.gradle
 
+      - name: Set Android compile SDK
+        run: find android -name "*.gradle*" -type f -exec sed -i "s/compileSdk = flutter.compileSdkVersion/compileSdk = 36/g; s/compileSdk flutter.compileSdkVersion/compileSdk 36/g" {} + 
+      - name: Inspect Android files
+        run: |
+          find android -maxdepth 3 -type f | sort
+          grep -R "compileSdk" android || true
       - name: Install dependencies
         run: flutter pub get
 
